@@ -1,5 +1,7 @@
 mod parser;
 use clap::Parser;
+use parser::ParseError;
+use std::process::exit;
 
 #[derive(Parser, Debug)]
 struct Args {
@@ -12,14 +14,38 @@ fn main() {
     for dotenv_file in &args.dotenv_files {
         if let Err(err) = dotenvy::from_filename(dotenv_file.clone()) {
             eprintln!("cannot load environment file `{dotenv_file}`: {err}");
-            std::process::exit(1);
+            exit(1);
         }
     }
 
-    if args.remain_args.len() == 0 {
+    let mut arg_sequence = args.remain_args.into_iter();
+    let mut program: Option<String> = None;
+    loop {
+        match arg_sequence.next() {
+            None => break,
+            Some(arg) => match parser::parse(&arg) {
+                Ok(env_var) => std::env::set_var(env_var.key, env_var.value),
+                Err(ParseError::NotEnvVar) => program = Some(arg),
+            },
+        }
+    }
+
+    if program.is_none() {
         for (key, value) in dotenvy::vars() {
             println!("{key}={value}");
         }
         return;
+    }
+
+    let command = std::process::Command::new(program.clone().unwrap())
+        .args(arg_sequence)
+        .envs(dotenvy::vars())
+        .status();
+    match command {
+        Err(err) => {
+            eprintln!("cannot spawn program `{}`: {err}", program.unwrap());
+            exit(2);
+        }
+        Ok(exit_status) => exit(exit_status.code().unwrap_or(1)),
     }
 }
