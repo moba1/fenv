@@ -4,7 +4,10 @@ use parser::ParseError;
 use std::process::exit;
 
 #[derive(Parser, Debug)]
+#[command(version)]
+#[command(about = "env command with dotenv")]
 struct Args {
+    /// dotenv file path. If you want to use multiple files, specify `-f file1 -f file2 ...`
     #[arg(short = 'f')]
     dotenv_files: Vec<String>,
     remain_args: Vec<String>,
