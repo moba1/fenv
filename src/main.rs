@@ -9,5 +9,10 @@ struct Args {
 }
 fn main() {
     let args = Args::parse();
-    println!("{:?}", args);
+    for dotenv_file in &args.dotenv_files {
+        if let Err(err) = dotenvy::from_filename(dotenv_file.clone()) {
+            eprintln!("cannot load environment file `{dotenv_file}`: {err}");
+            std::process::exit(1);
+        }
+    }
 }
