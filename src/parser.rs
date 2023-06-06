@@ -24,7 +24,10 @@ pub fn parse(arg: &str) -> Result<EnvVar, ParseError> {
     while state == State::ParsingSymbol {
         state = match character_sequence.next() {
             Some('=') => State::FoundSeparator,
-            Some(c) => { key.push(c); State::ParsingSymbol },
+            Some(c) => {
+                key.push(c);
+                State::ParsingSymbol
+            }
             None => State::EndOfString,
         }
     }
