@@ -10,6 +10,9 @@ struct Args {
     /// dotenv file path. If you want to use multiple files, specify `-f file1 -f file2 ...`
     #[arg(short = 'f')]
     dotenv_files: Vec<String>,
+    /// format: `[NAME=VALUE]... [COMMAND [ARG]...]`
+    /// environment set and comand arguments
+    #[arg(value_name = "ARGUMENTS", verbatim_doc_comment)]
     remain_args: Vec<String>,
 }
 fn main() {
