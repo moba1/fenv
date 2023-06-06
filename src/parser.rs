@@ -31,8 +31,11 @@ pub fn parse(arg: &str) -> Result<EnvVar, ParseError> {
             None => State::EndOfString,
         }
     }
-    if state == State::EndOfString {
-        return Err(ParseError::NotEnvVar);
+    match state {
+        State::EndOfString => Err(ParseError::NotEnvVar),
+        _ => Ok(EnvVar {
+            key,
+            value: String::from_iter(character_sequence),
+        }),
     }
-    return Ok(EnvVar { key: key, value: String::from_iter(character_sequence) });
 }
