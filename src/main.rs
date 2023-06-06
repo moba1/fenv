@@ -21,10 +21,10 @@ fn main() {
         }
     }
 
-    let mut arg_sequence = args.remain_args.into_iter();
+    let mut args = args.remain_args.into_iter();
     let mut program: Option<String> = None;
     loop {
-        match arg_sequence.next() {
+        match args.next() {
             None => break,
             Some(arg) => match parser::parse(&arg) {
                 Ok(env_var) => std::env::set_var(env_var.key, env_var.value),
@@ -41,7 +41,7 @@ fn main() {
     }
 
     let command = std::process::Command::new(program.clone().unwrap())
-        .args(arg_sequence)
+        .args(args)
         .envs(dotenvy::vars())
         .status();
     match command {

@@ -19,12 +19,12 @@ pub enum ParseError {
 }
 
 pub fn parse(arg: &str) -> Result<EnvVar, ParseError> {
-    let mut character_sequence = arg.chars();
+    let mut characters = arg.chars();
     let mut key = String::new();
 
     let mut state = State::ParsingSymbol;
     while state == State::ParsingSymbol {
-        state = match character_sequence.next() {
+        state = match characters.next() {
             Some('=') => State::FoundSeparator,
             Some(c) => {
                 key.push(c);
@@ -37,7 +37,7 @@ pub fn parse(arg: &str) -> Result<EnvVar, ParseError> {
         State::EndOfString => Err(ParseError::NotEnvVar),
         _ => Ok(EnvVar {
             key,
-            value: String::from_iter(character_sequence),
+            value: String::from_iter(characters),
         }),
     }
 }
