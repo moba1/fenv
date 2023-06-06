@@ -15,4 +15,11 @@ fn main() {
             std::process::exit(1);
         }
     }
+
+    if args.remain_args.len() == 0 {
+        for (key, value) in dotenvy::vars() {
+            println!("{key}={value}");
+        }
+        return;
+    }
 }
