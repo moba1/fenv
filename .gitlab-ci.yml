@@ -1,0 +1,35 @@
+image: "rust:1.56.0"
+
+stages:
+  - test
+  - lint
+  - build
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - .cargo
+
+variables:
+  CARGO_HOME: .cargo
+before_script:
+  - cargo fetch --locked
+
+cargo-test:
+  stage: test
+  script:
+    - cargo test
+
+clippy:
+  stage: lint
+  script:
+    - cargo clippy
+rustfmt:
+  stage: lint
+  script:
+    - cargo fmt --check
+
+cargo-build:
+  stage: build
+  script:
+    - cargo build
