@@ -2,6 +2,14 @@
 
 new `env` command
 
+## Requirements
+
+This project use [clap](https://github.com/clap-rs/clap) and clap require rust v1.64 or higher version.
+Therefore, this program require rust v1.64 or higher version.
+
+- target line https://github.com/clap-rs/clap/blob/v4.3.2/Cargo.toml#L17
+  - permlink: https://github.com/clap-rs/clap/blob/475e254d2534f888966ca5a61308176a99eb4281/Cargo.toml#L17
+
 ## Getting Started
 
 ```bash
