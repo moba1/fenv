@@ -18,6 +18,7 @@ variables:
   CARGO_HOME: .cargo
 before_script:
   - cargo fetch --locked
+  - rustup component add rustfmt clippy
 
 cargo-test:
   stage: test
