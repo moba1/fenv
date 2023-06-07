@@ -24,31 +24,19 @@ before_script:
 
 cargo-test:
   stage: test
-  rules:
-    - if: $CI_COMMIT_TAG
-      when: never
   script:
     - cargo test
 build-test:
   stage: test
-  rules:
-    - if: $CI_COMMIT_TAG
-      when: never
   script:
     - cargo build
 clippy:
   stage: test
-  rules:
-    - if: $CI_COMMIT_TAG
-      when: never
   script:
     - rustup component add clippy
     - cargo clippy
 rustfmt:
   stage: test
-  rules:
-    - if: $CI_COMMIT_TAG
-      when: never
   script:
     - rustup component add rustfmt
     - cargo fmt --check
