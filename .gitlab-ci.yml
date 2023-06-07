@@ -66,10 +66,11 @@ build:
     - cargo build --release --target x86_64-unknown-linux-gnu
     - cargo build --release --target x86_64-unknown-linux-musl
     - cargo build --release --target aarch64-unknown-linux-musl --config 'target.aarch64-unknown-linux-musl.linker="aarch64-linux-gnu-gcc"'
-    - echo "WINDOWS_64BIT_URL=https://gitlab.com/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/cw/-/jobs/${CI_JOB_ID}/artifacts/file/target/x86_64-pc-windows-gnu/release/fenv.exe" > .env
-    - echo "LINUX_X86_64_URL=https://gitlab.com/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/cw/-/jobs/${CI_JOB_ID}/artifacts/file/target/x86_64-unknown-linux-gnu/release/fenv" >> .env
-    - echo "LINUX_X86_64_MUSL_URL=https://gitlab.com/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/cw/-/jobs/${CI_JOB_ID}/artifacts/file/target/x86_64-unknown-linux-musl/release/fenv" >> .env
-    - echo "LINUX_AARCH64_MUSL_URL=https://gitlab.com/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/cw/-/jobs/${CI_JOB_ID}/artifacts/file/target/aarch64-unknown-linux-musl/release/fenv" >> .env
+    - echo "BASE_URL=https://gitlab.com/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/-/jobs/${CI_JOB_ID}/artifacts/raw"
+    - echo "WINDOWS_64BIT_PATH=target/x86_64-pc-windows-gnu/release/fenv.exe" > .env
+    - echo "LINUX_X86_64_PATH=target/x86_64-unknown-linux-gnu/release/fenv" >> .env
+    - echo "LINUX_X86_64_MUSL_PATH=target/x86_64-unknown-linux-musl/release/fenv" >> .env
+    - echo "LINUX_AARCH64_MUSL_PATH=target/aarch64-unknown-linux-musl/release/fenv" >> .env
   artifacts:
     paths:
       - target/x86_64-pc-windows-gnu/release/fenv.exe
@@ -98,11 +99,10 @@ release_job:
     assets:
       links:
         - name: Windows binary (x86_64)
-          url: $WINDOWS_64BIT_URL
+          url: $BASE_URL/$WINDOWS_64BIT_PATH
         - name: Linux binary (x86_64)
-          url: $LINUX_X86_64_URL
+          url: $BASE_URL/$LINUX_X86_64_PATH
         - name: Linux musl binary (x86_64)
-          url: $LINUX_X86_64_MUSL_URL
+          url: $BASE_URL/$LINUX_X86_64_MUSL_PATH
         - name: Linux musl binary (aarch64)
-          url: $LINUX_AARCH64_MUSL_URL
-
+          url: $BASE_URL/$LINUX_AARCH64_MUSL_PATH
