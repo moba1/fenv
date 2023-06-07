@@ -5,6 +5,13 @@ use parser::ParseError;
 use std::process::exit;
 use yansi::Paint;
 
+#[derive(Debug, Clone, clap::ValueEnum, PartialEq, Eq)]
+enum ColorMode {
+    Never,
+    Auto,
+    Always,
+}
+
 #[derive(Parser, Debug)]
 #[command(version)]
 #[command(about = "env command with dotenv")]
@@ -12,6 +19,9 @@ struct Args {
     /// dotenv file path. If you want to use multiple files, specify `-f file1 -f file2 ...`
     #[arg(short = 'f')]
     dotenv_files: Vec<String>,
+    /// color mode
+    #[arg(long = "color", default_value = "auto", verbatim_doc_comment)]
+    color_mode: ColorMode,
     /// format: `[NAME=VALUE]... [COMMAND [ARG]...]`
     /// environment set and comand arguments
     #[arg(value_name = "ARGUMENTS", verbatim_doc_comment)]
@@ -25,6 +35,7 @@ fn main() {
             exit(1);
         }
     }
+    let color_mode = args.color_mode;
 
     let mut args = args.remain_args.into_iter();
     let mut program: Option<String> = None;
@@ -41,7 +52,7 @@ fn main() {
     if program.is_none() {
         let is_tty = std::io::stdout().is_terminal();
         for (key, value) in dotenvy::vars() {
-            if is_tty {
+            if color_mode == ColorMode::Always || (color_mode == ColorMode::Auto && is_tty) {
                 println!("{}={}", Paint::green(key), Paint::blue(value));
             } else {
                 println!("{key}={value}")
