@@ -2,6 +2,9 @@ mod parser;
 use clap::Parser;
 use parser::ParseError;
 use std::process::exit;
+use is_terminal::IsTerminal;
+use yansi::Paint;
+
 
 #[derive(Parser, Debug)]
 #[command(version)]
@@ -37,8 +40,13 @@ fn main() {
     }
 
     if program.is_none() {
+        let is_tty = std::io::stdout().is_terminal();
         for (key, value) in dotenvy::vars() {
-            println!("{key}={value}");
+            if is_tty {
+                println!("{}={}", Paint::green(key), Paint::blue(value));
+            } else {
+                println!("{key}={value}")
+            }
         }
         return;
     }
