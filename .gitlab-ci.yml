@@ -92,7 +92,7 @@ release_job:
   script:
     - echo "releasing for $TAG"
   release:
-    name: Release $C_COMMIT_TAG
+    name: Release $CI_COMMIT_TAG
     description: Created usign the release-cli
     tag_name: $CI_COMMIT_TAG
     ref: $CI_COMMIT_TAG
