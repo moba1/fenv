@@ -1,10 +1,9 @@
 mod parser;
 use clap::Parser;
+use is_terminal::IsTerminal;
 use parser::ParseError;
 use std::process::exit;
-use is_terminal::IsTerminal;
 use yansi::Paint;
-
 
 #[derive(Parser, Debug)]
 #[command(version)]
