@@ -2,6 +2,11 @@
 name = "fenv"
 version = "0.1.0"
 edition = "2021"
+# clap require rust 1.64.0 or higher at 2023-06-07
+# 
+# link: https://github.com/clap-rs/clap/blob/v4.3.2/Cargo.toml#L17
+# permlink: https://github.com/clap-rs/clap/blob/475e254d2534f888966ca5a61308176a99eb4281/Cargo.toml#L17
+rust-version = "1.64"
 
 [dependencies]
 clap = { version = "4.3.2", features = ["derive"] }
