@@ -21,11 +21,10 @@ env command with dotenv
 Usage: fenv [OPTIONS] [ARGUMENTS]...
 
 Arguments:
-  [ARGUMENTS]...  format: `[NAME=VALUE]... [COMMAND [ARG]...]`
-                  environment set and comand arguments
+  [ARGUMENTS]...  environment set and comand arguments [format: [NAME=VALUE]... [COMMAND [ARG]...]]
 
 Options:
-  -f <DOTENV_FILES>         dotenv file path. If you want to use multiple files, specify `-f file1 -f file2 ...`
+  -f <DOTENV_FILES>         dotenv file path
       --color <COLOR_MODE>  color mode [default: auto] [possible values: never, auto, always]
   -h, --help                Print help
   -V, --version             Print version

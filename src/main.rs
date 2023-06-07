@@ -16,14 +16,13 @@ enum ColorMode {
 #[command(version)]
 #[command(about = "env command with dotenv")]
 struct Args {
-    /// dotenv file path. If you want to use multiple files, specify `-f file1 -f file2 ...`
+    /// dotenv file path
     #[arg(short = 'f')]
     dotenv_files: Vec<String>,
     /// color mode
     #[arg(long = "color", default_value = "auto", verbatim_doc_comment)]
     color_mode: ColorMode,
-    /// format: `[NAME=VALUE]... [COMMAND [ARG]...]`
-    /// environment set and comand arguments
+    /// environment set and comand arguments [format: [NAME=VALUE]... [COMMAND [ARG]...]]
     #[arg(value_name = "ARGUMENTS", verbatim_doc_comment)]
     remain_args: Vec<String>,
 }
