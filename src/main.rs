@@ -2,7 +2,7 @@ mod parser;
 use clap::Parser;
 use is_terminal::IsTerminal;
 use parser::ParseError;
-use std::process::exit;
+use std::process::ExitCode;
 use yansi::Paint;
 
 #[derive(Debug, Clone, clap::ValueEnum, PartialEq, Eq)]
@@ -26,12 +26,12 @@ struct Args {
     #[arg(value_name = "ARGUMENTS", verbatim_doc_comment)]
     remain_args: Vec<String>,
 }
-fn main() {
+fn main() -> ExitCode {
     let args = Args::parse();
     for dotenv_file in &args.dotenv_files {
         if let Err(err) = dotenvy::from_filename(dotenv_file.clone()) {
             eprintln!("cannot load environment file `{dotenv_file}`: {err}");
-            exit(1);
+            return ExitCode::FAILURE;
         }
     }
     let color_mode = args.color_mode;
@@ -57,18 +57,16 @@ fn main() {
                 println!("{key}={value}")
             }
         }
-        return;
+        return ExitCode::SUCCESS;
     }
 
     let command = std::process::Command::new(program.clone().unwrap())
         .args(args)
         .envs(dotenvy::vars())
         .status();
-    match command {
-        Err(err) => {
-            eprintln!("cannot spawn program `{}`: {err}", program.unwrap());
-            exit(2);
-        }
-        Ok(exit_status) => exit(exit_status.code().unwrap_or(1)),
+    if let Err(err) = command {
+        eprintln!("cannot spawn program `{}`: {err}", program.unwrap());
+        return ExitCode::FAILURE;
     }
+    ExitCode::SUCCESS
 }
