@@ -6,36 +6,103 @@ image: "rust:1.64.0"
 
 stages:
   - test
-  - lint
   - build
+  - release
 
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
     - .cargo
+    - target
+    - /var/cache/apt
 
 variables:
   CARGO_HOME: .cargo
+  DEBIAN_FRONTEND: noninteractive
 before_script:
   - cargo fetch --locked
 
 cargo-test:
   stage: test
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
   script:
     - cargo test
-
+build-test:
+  stage: test
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
+  script:
+    - cargo build
 clippy:
-  stage: lint
+  stage: test
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
   script:
     - rustup component add clippy
     - cargo clippy
 rustfmt:
-  stage: lint
+  stage: test
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
   script:
     - rustup component add rustfmt
     - cargo fmt --check
 
-cargo-build:
+build:
   stage: build
+  rules:
+    - if: $CI_COMMIT_TAG && $CI_COMMIT_BRANCH == "main"
+  before_script:
+    - apt-get update
+    - apt-get install -y mingw-w64 g++-aarch64-linux-gnu
+    - rustup target add x86_64-pc-windows-gnu x86_64-unknown-linux-gnu x86_64-unknown-linux-musl aarch64-unknown-linux-musl
   script:
-    - cargo build
+    - cargo build --release --target x86_64-pc-windows-gnu
+    - cargo build --release --target x86_64-unknown-linux-gnu
+    - cargo build --release --target x86_64-unknown-linux-musl
+    - cargo build --release --target aarch64-unknown-linux-musl --config 'target.aarch64-unknown-linux-musl.linker="aarch64-linux-gnu-gcc"'
+    - echo "WINDOWS_64BIT_URL=https://gitlab.com/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/cw/-/jobs/${CI_JOB_ID}/artifacts/file/target/x86_64-pc-windows-gnu/release/fenv.exe" > .env
+    - echo "LINUX_X86_64_URL=https://gitlab.com/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/cw/-/jobs/${CI_JOB_ID}/artifacts/file/target/x86_64-unknown-linux-gnu/release/fenv" >> .env
+    - echo "LINUX_X86_64_MUSL_URL=https://gitlab.com/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/cw/-/jobs/${CI_JOB_ID}/artifacts/file/target/x86_64-unknown-linux-musl/release/fenv" >> .env
+    - echo "LINUX_AARCH64_MUSL_URL=https://gitlab.com/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/cw/-/jobs/${CI_JOB_ID}/artifacts/file/target/aarch64-unknown-linux-musl/release/fenv" >> .env
+  artifacts:
+    paths:
+      - target/x86_64-pc-windows-gnu/release/fenv.exe
+      - target/x86_64-unknown-linux-gnu/release/fenv
+      - target/x86_64-unknown-linux-musl/release/fenv
+      - target/aarch64-unknown-linux-musl/release/fenv
+    reports:
+      dotenv: .env
+
+release_job:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  rules:
+    - if: $CI_COMMIT_TAG && $CI_COMMIT_BRANCH == "main"
+  needs:
+    - job: build
+      artifacts: true
+  before_script: []
+  script:
+    - echo "releasing for $TAG"
+  release:
+    name: Release $C_COMMIT_TAG
+    description: Created usign the release-cli
+    tag_name: $CI_COMMIT_TAG
+    ref: $CI_COMMIT_TAG
+    assets:
+      links:
+        - name: Windows binary (x86_64)
+          url: $WINDOWS_64BIT_URL
+        - name: Linux binary (x86_64)
+          url: $LINUX_X86_64_URL
+        - name: Linux musl binary (x86_64)
+          url: $LINUX_X86_64_MUSL_URL
+        - name: Linux musl binary (aarch64)
+          url: $LINUX_AARCH64_MUSL_URL
+
