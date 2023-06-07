@@ -1,4 +1,6 @@
-image: "rust:1.56.0"
+# clap require rust 1.64.0 or higher at 2023-06-07
+# https://github.com/clap-rs/clap/blob/v4.3.2/Cargo.toml#L17
+image: "rust:1.64.0"
 
 stages:
   - test
