@@ -94,3 +94,12 @@ release_job:
           url: $BASE_URL/$LINUX_X86_64_MUSL_PATH
         - name: Linux musl binary (aarch64)
           url: $BASE_URL/$LINUX_AARCH64_MUSL_PATH
+publish:
+  stage: release
+  before_script:
+    - cargo login $CRATES_PUBLISH_API_TOKEN
+  script:
+    - cargo publish
+  rules:
+    - if: $CI_COMMIT_TAG
+
