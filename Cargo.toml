@@ -7,6 +7,17 @@ edition = "2021"
 # link: https://github.com/clap-rs/clap/blob/v4.3.2/Cargo.toml#L17
 # permlink: https://github.com/clap-rs/clap/blob/475e254d2534f888966ca5a61308176a99eb4281/Cargo.toml#L17
 rust-version = "1.64"
+authors = ["moba1 <moba2@proton.me>"]
+description = """
+new env command with dotenv
+"""
+categories = ["command-line-utilities"]
+documentation = "https://gitlab/moba1/fenv"
+homepage = "https://gitlab/moba1/fenv"
+repository = "https://gitlab/moba1/fenv"
+keywords = ["commandline", "env", "dotenv"]
+readme = "README.md"
+license = "GPL-2.0-or-later"
 
 [dependencies]
 clap = { version = "4.3.2", features = ["derive"] }
