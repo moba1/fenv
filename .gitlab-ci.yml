@@ -56,9 +56,13 @@ build:
     - cargo build --release --target aarch64-unknown-linux-musl --config 'target.aarch64-unknown-linux-musl.linker="aarch64-linux-gnu-gcc"'
     - echo "BASE_URL=https://gitlab.com/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/-/jobs/${CI_JOB_ID}/artifacts/raw" > .env
     - echo "WINDOWS_64BIT_PATH=target/x86_64-pc-windows-gnu/release/fenv.exe" >> .env
+    - echo "WINDOWS_64BIT_CHECKSUM_SHA256=$(shasum -a 256 target/x86_64-pc-windows-gnu/release/fenv.exe | cut -f 1 -d ' ')" >> .env
     - echo "LINUX_X86_64_PATH=target/x86_64-unknown-linux-gnu/release/fenv" >> .env
+    - echo "LINUX_X86_64_CHECKSUM_SHA256=$(shasum -a 256 target/x86_64-unknown-linux-gnu/release/fenv | cut -f 1 -d ' ')" >> .env
     - echo "LINUX_X86_64_MUSL_PATH=target/x86_64-unknown-linux-musl/release/fenv" >> .env
+    - echo "LINUX_X86_64_MUSL_CHECKSUM_SHA256=$(shasum -a 256 target/x86_64-unknown-linux-musl/release/fenv | cut -f 1 -d ' ')" >> .env
     - echo "LINUX_AARCH64_MUSL_PATH=target/aarch64-unknown-linux-musl/release/fenv" >> .env
+    - echo "LINUX_AARCH64_MUSL_CHECKSUM_SHA256=$(shasum -a 256 target/aarcg64-unknown-linux-musl/release/fenv | cut -f 1 -d ' ')" >> .env
   artifacts:
     paths:
       - target/x86_64-pc-windows-gnu/release/fenv.exe
@@ -81,7 +85,17 @@ release_job:
     - echo "releasing for $CI_COMMIT_TAG"
   release:
     name: Release $CI_COMMIT_TAG
-    description: Created usign the release-cli
+    description: >
+      Created usign the release-cli
+
+
+      # Checksum
+
+
+      - Windows binary (x86_64): "$WINDOWS_64BIT_CHECKSUM_SHA256"
+      - Linux binary (x86_64): "$LINUX_X86_64_CHECKSUM_SHA256"
+      - Linux musl binary (x86_64): "$LINUX_X86_64_MUSL_CHECKSUM_SHA256"
+      - Linux musl binary (aarych64): "$LINUX_AARCH64_MUSL_CHECKSUM_SHA256"
     tag_name: $CI_COMMIT_TAG
     ref: $CI_COMMIT_TAG
     assets:
