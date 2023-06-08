@@ -21,6 +21,23 @@ ENV_A=true
 ENV_B=true
 ```
 
+## Installation
+
+### Cargo
+
+we published `fenv` crates.
+you install `fenv` from cargo, run following command.
+
+```bash
+cargo install fenv
+```
+
+Once installation was completed, `fenv` command should be present in the `bin` directory in `$CARGO_HOME` (usually `~/.cargo`).
+
+```bash
+~/.cargo/bin/fenv --help
+```
+
 ## Usage
 
 ```
