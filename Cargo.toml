@@ -1,6 +1,6 @@
 [package]
 name = "fenv"
-version = "0.3.0"
+version = "0.2.0"
 edition = "2021"
 # clap require rust 1.64.0 or higher at 2023-06-07
 # 
