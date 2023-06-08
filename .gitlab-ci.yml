@@ -85,12 +85,10 @@ release_job:
     - echo "releasing for $CI_COMMIT_TAG"
   release:
     name: Release $CI_COMMIT_TAG
-    description: >
+    description: |
       Created usign the release-cli
 
-
       # Checksum
-
 
       - Windows binary (x86_64): "$WINDOWS_64BIT_CHECKSUM_SHA256"
       - Linux binary (x86_64): "$LINUX_X86_64_CHECKSUM_SHA256"
