@@ -78,7 +78,7 @@ release_job:
       artifacts: true
   before_script: []
   script:
-    - echo "releasing for $TAG"
+    - echo "releasing for $CI_COMMIT_TAG"
   release:
     name: Release $CI_COMMIT_TAG
     description: Created usign the release-cli
