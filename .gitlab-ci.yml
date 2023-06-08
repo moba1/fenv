@@ -14,7 +14,6 @@ cache:
   paths:
     - .cargo
     - target
-    - /var/cache/apt
 
 variables:
   CARGO_HOME: .cargo
